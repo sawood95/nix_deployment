@@ -21,8 +21,9 @@
 
     # Dev utilities (user-scoped versions)
     lazygit
-    delta            # nicer git diffs
-    just             # task runner
+    delta # nicer git diffs
+    just # task runner
+    fastfetch # just to be cool :)
 
     # Fonts (for kitty / VSCodium)
     nerd-fonts.jetbrains-mono
@@ -31,9 +32,11 @@
   # ==== Git ====
   programs.git = {
     enable = true;
-    userName = "Stephen";       # change me
-    userEmail = "swood95@gmail.com"; # change me
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Stephen"; # change me
+        email = "swood95@gmail.com"; # change me
+      };
       init.defaultBranch = "main";
       pull.rebase = true;
       push.autoSetupRemote = true;
@@ -41,11 +44,11 @@
       interactive.diffFilter = "delta --color-only";
       delta.navigate = true;
       merge.conflictstyle = "diff3";
-    };
-    aliases = {
-      st = "status -sb";
-      lg = "log --oneline --graph --decorate -20";
-      co = "checkout";
+      alias = {
+        st = "status -sb";
+        lg = "log --oneline --graph --decorate -20";
+        co = "checkout";
+      };
     };
   };
 
@@ -53,6 +56,7 @@
   # Define the webserver here so `ssh webserver` and `git push web` Just Work.
   programs.ssh = {
     enable = true;
+    enableDefaultConfig = false;
     matchBlocks = {
       "github.com" = {
         user = "git";
@@ -60,7 +64,7 @@
       };
       "webserver" = {
         hostname = "your-server.example.com"; # change me
-        user = "deploy";                       # change me
+        user = "deploy"; # change me
         identityFile = "~/.ssh/id_ed25519";
       };
     };

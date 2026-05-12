@@ -19,8 +19,8 @@
   # ==== Desktop ====
   # GNOME on Wayland is a solid default; swap for plasma6 / hyprland if preferred.
   services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
   services.xserver.xkb.layout = "us";
 
   # ==== Audio ====
@@ -77,7 +77,8 @@
   ];
 
   # ==== SSH (for pushing to your webserver, GitHub, etc.) ====
-  programs.ssh.startAgent = true;
+  # GNOME enables gcr-ssh-agent by default; don't also install the OpenSSH
+  # agent system-wide or NixOS will reject the configuration.
   services.openssh = {
     enable = false; # flip to true if you want to SSH _into_ Sagan
     settings.PasswordAuthentication = false;

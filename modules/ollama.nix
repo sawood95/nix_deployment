@@ -7,8 +7,8 @@
   services.ollama = {
     enable = true;
 
-    # acceleration = "cuda" pulls the ollama-cuda build automatically.
-    acceleration = "cuda";
+    # Select the CUDA-enabled build for NVIDIA acceleration.
+    package = pkgs.ollama-cuda;
 
     # Listen only on localhost by default. Change to "0.0.0.0" if you want
     # other machines on your LAN (or Tailscale) to hit this Ollama instance,
@@ -20,9 +20,9 @@
     # use day-to-day; a 4090's 24 GB of VRAM comfortably runs 70B-ish at
     # Q4_0 quantization or larger 32B models with full precision.
     loadModels = [
-      "qwen2.5-coder:32b"   # solid local coding model
-      "llama3.1:8b"         # lightweight general-purpose
-      "nomic-embed-text"    # embeddings for RAG / editor plugins
+      "qwen2.5-coder:32b" # solid local coding model
+      "llama3.1:8b" # lightweight general-purpose
+      "nomic-embed-text" # embeddings for RAG / editor plugins
     ];
 
     # If you want the API reachable from your LAN:
@@ -31,5 +31,5 @@
 
   # Convenience CLI access for `ollama run ...` from any shell. The service
   # already bundles its own binary, but having `ollama` on $PATH is nice.
-  environment.systemPackages = [ pkgs.ollama-cuda ];
+  environment.systemPackages = [ config.services.ollama.package ];
 }

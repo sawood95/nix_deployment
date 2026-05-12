@@ -19,7 +19,8 @@
       system = "x86_64-linux";
       username = "stephen";
       hostname = "sagan";
-    in {
+    in
+    {
       nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs username hostname; };

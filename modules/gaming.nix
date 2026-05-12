@@ -38,13 +38,13 @@
 
   # System-wide gaming tools
   environment.systemPackages = with pkgs; [
-    protonplus    # GUI manager for Proton / Wine versions
-    protontricks  # tweak per-game Proton prefixes
-    mangohud      # FPS / frame-time overlay
-    gamescope     # micro-compositor for Steam
+    protonplus # GUI manager for Proton / Wine versions
+    protontricks # tweak per-game Proton prefixes
+    mangohud # FPS / frame-time overlay
+    gamescope # micro-compositor for Steam
   ];
 
   # Some games and Proton versions hit the default file-descriptor ceiling
-  systemd.extraConfig = "DefaultLimitNOFILE=1048576";
+  systemd.settings.Manager.DefaultLimitNOFILE = 1048576;
   systemd.user.extraConfig = "DefaultLimitNOFILE=1048576";
 }
