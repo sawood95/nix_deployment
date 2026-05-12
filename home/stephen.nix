@@ -34,7 +34,7 @@
     enable = true;
     settings = {
       user = {
-        name = "Stephen"; # change me
+        name = "Stephen Wood"; # change me
         email = "swood95@gmail.com"; # change me
       };
       init.defaultBranch = "main";

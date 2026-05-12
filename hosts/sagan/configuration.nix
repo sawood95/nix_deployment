@@ -74,6 +74,7 @@
     pciutils
     usbutils
     htop
+    protonvpn-gui
   ];
 
   # ==== SSH (for pushing to your webserver, GitHub, etc.) ====
