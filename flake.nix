@@ -1,5 +1,5 @@
 {
-  description = "Stephen's NixOS configuration — Sagan";
+  description = "Stephen's NixOS configuration — Verstappen";
 
   inputs = {
     # Pin nixpkgs to the current stable NixOS release.
@@ -23,7 +23,7 @@
     let
       system = "x86_64-linux";
       username = "stephen";
-      hostname = "sagan";
+      hostname = "verstappen";
     in
     {
       nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {

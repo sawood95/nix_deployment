@@ -1,4 +1,4 @@
-# Sagan — NixOS configuration
+# Verstappen — NixOS configuration
 
 A flake-based NixOS 26.05 stable setup for an RTX 4090 workstation. Manages
 the system with `nixpkgs`, and dotfiles / user packages with `home-manager`.
@@ -8,7 +8,7 @@ Repo: <https://github.com/sawood95/nix_deployment>
 ## Bootstrap from zero
 
 The exact sequence to go from a freshly-downloaded NixOS ISO to a working
-Sagan with your webapp cloned. No browser needed on the new machine until
+Verstappen with your webapp cloned. No browser needed on the new machine until
 the very end.
 
 **Before you start:** write down `github.com/sawood95/nix_deployment`. That
@@ -33,31 +33,31 @@ is the only thing you need to remember off the new machine.
    sudo rm -rf /mnt/etc/nixos
    nix-shell -p git --run \
      'git clone https://github.com/sawood95/nix_deployment /mnt/etc/nixos'
-   sudo cp /tmp/hw.nix /mnt/etc/nixos/hosts/sagan/hardware-configuration.nix
+   sudo cp /tmp/hw.nix /mnt/etc/nixos/hosts/verstappen/hardware-configuration.nix
    ```
 
 5. **Edit the placeholders.** At minimum, set your real git name/email:
    ```bash
    nano /mnt/etc/nixos/home/stephen.nix
    ```
-   Also double-check `time.timeZone` in `hosts/sagan/configuration.nix`.
+   Also double-check `time.timeZone` in `hosts/verstappen/configuration.nix`.
 
 6. **Install:**
    ```bash
-   sudo nixos-install --flake /mnt/etc/nixos#sagan
+   sudo nixos-install --flake /mnt/etc/nixos#verstappen
    ```
    Set a root password when prompted, then `reboot`.
 
 7. **First boot.** Log in as `stephen`. Open Ghostty.
 
 8. **Authenticate to GitHub** using device flow — no browser needed on
-   Sagan, you'll use your phone:
+   Verstappen, you'll use your phone:
    ```bash
    gh auth login
    ```
    Pick: GitHub.com → HTTPS → Login with a web browser. It prints a code
    like `XXXX-XXXX`. On your phone, open <https://github.com/login/device>,
-   sign in, type the code. The CLI on Sagan is now authenticated.
+   sign in, type the code. The CLI on Verstappen is now authenticated.
 
    When it asks whether to also set up an SSH key — say yes. It generates
    `~/.ssh/id_ed25519`, uploads the public half to your GitHub account, and
@@ -102,7 +102,7 @@ merging to `dev` triggers your GitHub Actions deploy.
 ```
 .
 ├── flake.nix                          # entry point, inputs, outputs
-├── hosts/sagan/
+├── hosts/verstappen/
 │   ├── configuration.nix              # bootloader, desktop, users, nix
 │   └── hardware-configuration.nix     # REPLACE WITH GENERATED FILE
 ├── modules/
@@ -124,7 +124,7 @@ See [Bootstrap from zero](#bootstrap-from-zero) above. After the system is
 up, edits to the config are applied with:
 
 ```bash
-sudo nixos-rebuild switch --flake /etc/nixos#sagan
+sudo nixos-rebuild switch --flake /etc/nixos#verstappen
 ```
 
 ## Web app development modes
@@ -158,7 +158,7 @@ it up declaratively.
 ## Deploy
 
 Deployment is handled by GitHub Actions: merging to `dev` triggers the
-workflow that ships the build to the webserver. From Sagan, you just push
+workflow that ships the build to the webserver. From Verstappen, you just push
 to GitHub.
 
 ```bash
@@ -169,7 +169,7 @@ git push origin feature/foo
 # open PR, merge to dev, Actions takes it from there
 ```
 
-First-time setup on Sagan: generate an SSH key and add the public half to
+First-time setup on Verstappen: generate an SSH key and add the public half to
 GitHub.
 
 ```bash
@@ -181,8 +181,8 @@ The home-manager SSH config already declares `github.com` to use that key.
 
 ## Day-to-day
 
-- Rebuild after edits: `sudo nixos-rebuild switch --flake /etc/nixos#sagan`
-- Test without activating: `sudo nixos-rebuild test --flake /etc/nixos#sagan`
+- Rebuild after edits: `sudo nixos-rebuild switch --flake /etc/nixos#verstappen`
+- Test without activating: `sudo nixos-rebuild test --flake /etc/nixos#verstappen`
 - Update inputs: `cd /etc/nixos && sudo nix flake update`
 - Update only the stable base inputs: `nix flake update nixpkgs home-manager`
 - Update DankMaterialShell only: `nix flake update dms`
@@ -235,7 +235,7 @@ nix flake check path:$PWD
 ```
 
 That command is expected to fail while
-`hosts/sagan/hardware-configuration.nix` is still the placeholder, because
+`hosts/verstappen/hardware-configuration.nix` is still the placeholder, because
 there is no real `/` filesystem declaration yet. After generating and copying
 the real hardware config, run:
 
@@ -250,7 +250,7 @@ with a temporary root filesystem overlay:
 ```bash
 nix eval --impure --expr 'let
   flake = builtins.getFlake "path:${builtins.getEnv "PWD"}";
-  cfg = flake.nixosConfigurations.sagan.extendModules {
+  cfg = flake.nixosConfigurations.verstappen.extendModules {
     modules = [ ({ ... }: { fileSystems."/" = { device = "none"; fsType = "tmpfs"; }; }) ];
   };
 in cfg.config.system.build.toplevel.drvPath'

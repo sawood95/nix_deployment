@@ -74,7 +74,7 @@
   # GNOME enables gcr-ssh-agent by default; don't also install the OpenSSH
   # agent system-wide or NixOS will reject the configuration.
   services.openssh = {
-    enable = false; # flip to true if you want to SSH _into_ Sagan
+    enable = false; # flip to true if you want to SSH _into_ Verstappen
     settings.PasswordAuthentication = false;
   };
 
