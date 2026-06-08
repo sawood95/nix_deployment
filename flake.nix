@@ -2,11 +2,16 @@
   description = "Stephen's NixOS configuration — Sagan";
 
   inputs = {
-    # Pin nixpkgs to unstable for latest packages (claude-code, codex, etc.)
+    # Pin nixpkgs to unstable for latest packages (codex, aider-chat, etc.)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -30,6 +35,7 @@
           ./hosts/${hostname}/hardware-configuration.nix
 
           # Common NixOS modules
+          ./modules/desktop.nix
           ./modules/nvidia.nix
           ./modules/gaming.nix
           ./modules/dev.nix

@@ -5,8 +5,8 @@
   # per-project devShells (see devshells/web.nix) rather than installed
   # globally, so they're pinned with your repo.
   environment.systemPackages = with pkgs; [
-    # AI coding agents — both in nixpkgs unstable
-    claude-code
+    # AI coding agents
+    aider-chat
     codex
 
     # VCS + GitHub

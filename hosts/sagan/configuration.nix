@@ -16,13 +16,6 @@
   time.timeZone = "America/New_York"; # adjust to taste
   i18n.defaultLocale = "en_US.UTF-8";
 
-  # ==== Desktop ====
-  # GNOME on Wayland is a solid default; swap for plasma6 / hyprland if preferred.
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-  services.xserver.xkb.layout = "us";
-
   # ==== Audio ====
   security.rtkit.enable = true;
   services.pipewire = {

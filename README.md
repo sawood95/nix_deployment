@@ -48,7 +48,7 @@ is the only thing you need to remember off the new machine.
    ```
    Set a root password when prompted, then `reboot`.
 
-7. **First boot.** Log in as `stephen`. Open kitty.
+7. **First boot.** Log in as `stephen`. Open Ghostty.
 
 8. **Authenticate to GitHub** using device flow — no browser needed on
    Sagan, you'll use your phone:
@@ -88,7 +88,8 @@ merging to `dev` triggers your GitHub Actions deploy.
 | Concern | How it's handled |
 |---|---|
 | Steam + Proton | `programs.steam` with Proton-GE declarative; ProtonPlus GUI for extras |
-| AI coding agents | `claude-code` + `codex` from nixpkgs (system-wide) |
+| Desktop | GNOME and MangoWC selectable from the GDM login screen |
+| AI coding agents | `codex` + `aider-chat` from nixpkgs (system-wide) |
 | Local LLMs | `services.ollama` with CUDA acceleration, models preloaded |
 | Web app dev | `flake.nix` + `direnv` per repo (no Docker daemon needed) |
 | Devcontainer fallback | Rootless Podman with Docker-compatible socket |
@@ -103,12 +104,13 @@ merging to `dev` triggers your GitHub Actions deploy.
 │   ├── configuration.nix              # bootloader, desktop, users, nix
 │   └── hardware-configuration.nix     # REPLACE WITH GENERATED FILE
 ├── modules/
+│   ├── desktop.nix                    # GNOME + MangoWC via GDM
 │   ├── nvidia.nix                     # RTX 4090 drivers
 │   ├── gaming.nix                     # Steam, Proton, GameMode
-│   ├── dev.nix                        # claude-code, codex, direnv
+│   ├── dev.nix                        # codex, aider-chat, direnv
 │   └── ollama.nix                     # Ollama + CUDA + preloaded models
 ├── home/
-│   └── stephen.nix                    # user packages, zsh, kitty, git, ssh
+│   └── stephen.nix                    # user packages, zsh, Ghostty, tmux, git, ssh
 └── devshells/
     ├── web-app-flake.nix              # template flake for your web app repo
     └── web-app.envrc                  # direnv loader for the same
@@ -186,6 +188,36 @@ The home-manager SSH config already declares `github.com` to use that key.
   use the ProtonPlus GUI — it drops into `~/.steam/root/compatibilitytools.d`
   which Steam already scans (env var is set in `modules/gaming.nix`).
 
+## Desktop sessions
+
+GNOME and MangoWC are both available through GDM. To switch, log out, select
+your user, use the session chooser on the login screen, then pick GNOME or
+MangoWC before signing in.
+
+GNOME is kept installed as the safe full desktop. MangoWC is available as a
+lighter Wayland compositor session for when you want a smaller environment.
+
+DankMaterialShell is installed through its upstream Nix flake and starts from
+MangoWC's `~/.config/mango/autostart.sh`. It is intentionally not started as a
+generic graphical-session systemd service, so it should not launch in GNOME.
+
+## Terminal workflow
+
+Ghostty is the configured terminal emulator, zsh is the login shell, and
+Starship provides the prompt.
+
+Tmux uses an Omarchy-inspired setup: `Ctrl+Space` is the main prefix,
+`Ctrl+b` still works, the status bar is at the top, vi copy mode is enabled,
+and `Alt+1` through `Alt+9` switch windows. Use `t` to attach to an existing
+session or create `Work`.
+
+Two helper functions are available:
+
+```bash
+tdl aider-local  # editor left, Aider top-right, shell bottom-right
+tsl 4 aider-local  # four-pane local-Aider swarm layout
+```
+
 ## Testing this repo before install
 
 If you are editing from a standalone Nix install before this repo is checked
@@ -228,14 +260,23 @@ nvtop                 # live GPU monitor
 journalctl -u ollama  # service logs, look for "new model will fit in VRAM"
 ```
 
-If you want VSCodium / Claude Code to talk to your local Ollama, point them
-at `http://localhost:11434`.
+For quick local model use:
+
+```bash
+ai           # ollama run qwen2.5-coder:32b
+aider        # uses ~/.aider.conf.yml with qwen2.5-coder:32b
+aider-local  # aider --model ollama/qwen2.5-coder:32b
+aider-fast   # aider --model ollama/llama3.1:8b
+```
+
+If you want VSCodium, Codex, Aider, or another tool to talk to your local
+Ollama service, point it at `http://localhost:11434`.
 
 ## Why this shape over `configuration.nix` channels?
 
 - **Flake.lock pins every input.** Same `nixos-rebuild` on day 1 and day 400
   produces the same system. No surprise breakage from a channel auto-update.
-- **Home-manager** keeps your zsh/kitty/git/ssh declarative. After your
+- **Home-manager** keeps your zsh/Ghostty/tmux/git/ssh declarative. After your
   Fedora/Omarchy/Bluefin/Pika tour, never re-paste a `.zshrc` again.
 - **Modules** split concerns. Want a second host (laptop) sharing some of
   this? Add `hosts/laptop/` and pick which modules it imports.
