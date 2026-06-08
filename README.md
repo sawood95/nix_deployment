@@ -1,7 +1,7 @@
 # Sagan — NixOS configuration
 
-A flake-based NixOS setup for an RTX 4090 workstation. Manages the system
-with `nixpkgs`, and dotfiles / user packages with `home-manager`.
+A flake-based NixOS 26.05 stable setup for an RTX 4090 workstation. Manages
+the system with `nixpkgs`, and dotfiles / user packages with `home-manager`.
 
 Repo: <https://github.com/sawood95/nix_deployment>
 
@@ -87,10 +87,12 @@ merging to `dev` triggers your GitHub Actions deploy.
 
 | Concern | How it's handled |
 |---|---|
+| Base release | `nixos-26.05` with matching `home-manager/release-26.05` |
 | Steam + Proton | `programs.steam` with Proton-GE declarative; ProtonPlus GUI for extras |
-| Desktop | GNOME and MangoWC selectable from the GDM login screen |
+| Desktop | GNOME and MangoWC selectable from GDM; DankMaterialShell starts inside MangoWC |
 | AI coding agents | `codex` + `aider-chat` from nixpkgs (system-wide) |
 | Local LLMs | `services.ollama` with CUDA acceleration, models preloaded |
+| Terminal workflow | Ghostty + zsh + Starship + Omarchy-inspired tmux |
 | Web app dev | `flake.nix` + `direnv` per repo (no Docker daemon needed) |
 | Devcontainer fallback | Rootless Podman with Docker-compatible socket |
 | Deploy to webserver | `git push` to GitHub → Actions deploys on merge to `dev` |
@@ -182,6 +184,8 @@ The home-manager SSH config already declares `github.com` to use that key.
 - Rebuild after edits: `sudo nixos-rebuild switch --flake /etc/nixos#sagan`
 - Test without activating: `sudo nixos-rebuild test --flake /etc/nixos#sagan`
 - Update inputs: `cd /etc/nixos && sudo nix flake update`
+- Update only the stable base inputs: `nix flake update nixpkgs home-manager`
+- Update DankMaterialShell only: `nix flake update dms`
 - Roll back: pick a previous generation from the boot menu, or
   `sudo nixos-rebuild switch --rollback`
 - Pull a new Proton-GE version (when ProtonPlus app isn't fresh enough): just
@@ -200,6 +204,9 @@ lighter Wayland compositor session for when you want a smaller environment.
 DankMaterialShell is installed through its upstream Nix flake and starts from
 MangoWC's `~/.config/mango/autostart.sh`. It is intentionally not started as a
 generic graphical-session systemd service, so it should not launch in GNOME.
+
+The MangoWC session also enables the supporting desktop services DMS expects:
+Polkit, accounts-daemon, geoclue, and power-profiles-daemon.
 
 ## Terminal workflow
 
@@ -269,6 +276,14 @@ aider-local  # aider --model ollama/qwen2.5-coder:32b
 aider-fast   # aider --model ollama/llama3.1:8b
 ```
 
+Service shortcuts:
+
+```bash
+ollama-status
+ollama-stop
+ollama-start
+```
+
 If you want VSCodium, Codex, Aider, or another tool to talk to your local
 Ollama service, point it at `http://localhost:11434`.
 
@@ -276,6 +291,9 @@ Ollama service, point it at `http://localhost:11434`.
 
 - **Flake.lock pins every input.** Same `nixos-rebuild` on day 1 and day 400
   produces the same system. No surprise breakage from a channel auto-update.
+- **Stable base, selective freshness.** `nixpkgs` and Home Manager track
+  NixOS 26.05 stable, while DankMaterialShell is pulled from its upstream
+  flake so the MangoWC shell can move independently.
 - **Home-manager** keeps your zsh/Ghostty/tmux/git/ssh declarative. After your
   Fedora/Omarchy/Bluefin/Pika tour, never re-paste a `.zshrc` again.
 - **Modules** split concerns. Want a second host (laptop) sharing some of

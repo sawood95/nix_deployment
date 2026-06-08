@@ -2,11 +2,11 @@
   description = "Stephen's NixOS configuration — Sagan";
 
   inputs = {
-    # Pin nixpkgs to unstable for latest packages (codex, aider-chat, etc.)
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Pin nixpkgs to the current stable NixOS release.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

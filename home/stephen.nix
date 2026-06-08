@@ -94,6 +94,9 @@
       ai = "ollama run qwen2.5-coder:32b";
       aider-local = "aider --model ollama/qwen2.5-coder:32b";
       aider-fast = "aider --model ollama/llama3.1:8b";
+      ollama-stop = "sudo systemctl stop ollama";
+      ollama-start = "sudo systemctl start ollama";
+      ollama-status = "systemctl status ollama";
     };
 
     initContent = ''
