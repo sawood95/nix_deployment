@@ -89,7 +89,7 @@ merging to `dev` triggers your GitHub Actions deploy.
 |---|---|
 | Base release | `nixos-26.05` with matching `home-manager/release-26.05` |
 | Steam + Proton | `programs.steam` with Proton-GE declarative; ProtonPlus GUI for extras |
-| Desktop | GNOME and MangoWC selectable from GDM; DankMaterialShell starts inside MangoWC |
+| Desktop | GNOME and Hyprland selectable from GDM; Caelestia Shell starts inside Hyprland |
 | AI coding agents | `codex` + `aider-chat` from nixpkgs (system-wide) |
 | Local LLMs | `services.ollama` with CUDA acceleration, models preloaded |
 | Terminal workflow | Ghostty + zsh + Starship + Omarchy-inspired tmux |
@@ -106,7 +106,7 @@ merging to `dev` triggers your GitHub Actions deploy.
 │   ├── configuration.nix              # bootloader, desktop, users, nix
 │   └── hardware-configuration.nix     # REPLACE WITH GENERATED FILE
 ├── modules/
-│   ├── desktop.nix                    # GNOME + MangoWC via GDM
+│   ├── desktop.nix                    # GNOME + Hyprland via GDM
 │   ├── nvidia.nix                     # RTX 4090 drivers
 │   ├── gaming.nix                     # Steam, Proton, GameMode
 │   ├── dev.nix                        # codex, aider-chat, direnv
@@ -185,7 +185,7 @@ The home-manager SSH config already declares `github.com` to use that key.
 - Test without activating: `sudo nixos-rebuild test --flake /etc/nixos#verstappen`
 - Update inputs: `cd /etc/nixos && sudo nix flake update`
 - Update only the stable base inputs: `nix flake update nixpkgs home-manager`
-- Update DankMaterialShell only: `nix flake update dms`
+- Update Caelestia Shell only: `nix flake update caelestia-shell`
 - Roll back: pick a previous generation from the boot menu, or
   `sudo nixos-rebuild switch --rollback`
 - Pull a new Proton-GE version (when ProtonPlus app isn't fresh enough): just
@@ -194,18 +194,18 @@ The home-manager SSH config already declares `github.com` to use that key.
 
 ## Desktop sessions
 
-GNOME and MangoWC are both available through GDM. To switch, log out, select
+GNOME and Hyprland are both available through GDM. To switch, log out, select
 your user, use the session chooser on the login screen, then pick GNOME or
-MangoWC before signing in.
+Hyprland before signing in.
 
-GNOME is kept installed as the safe full desktop. MangoWC is available as a
-lighter Wayland compositor session for when you want a smaller environment.
+GNOME is kept installed as the safe full desktop. Hyprland is available as the
+Wayland compositor session for the Caelestia desktop shell.
 
-DankMaterialShell is installed through its upstream Nix flake and starts from
-MangoWC's `~/.config/mango/autostart.sh`. It is intentionally not started as a
+Caelestia Shell is installed through its upstream Nix flake and starts from
+Hyprland's `~/.config/hypr/hyprland.conf`. It is intentionally not started as a
 generic graphical-session systemd service, so it should not launch in GNOME.
 
-The MangoWC session also enables the supporting desktop services DMS expects:
+The Hyprland session also enables the supporting desktop services Caelestia expects:
 Polkit, accounts-daemon, geoclue, and power-profiles-daemon.
 
 ## Terminal workflow
@@ -292,8 +292,8 @@ Ollama service, point it at `http://localhost:11434`.
 - **Flake.lock pins every input.** Same `nixos-rebuild` on day 1 and day 400
   produces the same system. No surprise breakage from a channel auto-update.
 - **Stable base, selective freshness.** `nixpkgs` and Home Manager track
-  NixOS 26.05 stable, while DankMaterialShell is pulled from its upstream
-  flake so the MangoWC shell can move independently.
+  NixOS 26.05 stable, while Caelestia Shell is pulled from its upstream
+  flake so the Hyprland shell can move independently.
 - **Home-manager** keeps your zsh/Ghostty/tmux/git/ssh declarative. After your
   Fedora/Omarchy/Bluefin/Pika tour, never re-paste a `.zshrc` again.
 - **Modules** split concerns. Want a second host (laptop) sharing some of

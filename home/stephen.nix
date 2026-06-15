@@ -2,12 +2,12 @@
 
 {
   imports = [
-    inputs.dms.homeModules.dank-material-shell
+    inputs.caelestia-shell.homeManagerModules.default
   ];
 
   home.username = username;
   home.homeDirectory = "/home/${username}";
-  home.stateVersion = "25.05";
+  home.stateVersion = "26.05";
 
   # User-level packages. Things you want available in your shell without
   # being part of the system closure.
@@ -15,6 +15,7 @@
     # Browsers
     brave
     vivaldi
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Comms / media
     discord
@@ -62,15 +63,15 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "github.com" = {
-        user = "git";
-        identityFile = "~/.ssh/id_ed25519";
+        User = "git";
+        IdentityFile = "~/.ssh/id_ed25519";
       };
       "webserver" = {
-        hostname = "your-server.example.com"; # change me
-        user = "deploy"; # change me
-        identityFile = "~/.ssh/id_ed25519";
+        HostName = "your-server.example.com"; # change me
+        User = "deploy"; # change me
+        IdentityFile = "~/.ssh/id_ed25519";
       };
     };
   };
@@ -162,18 +163,98 @@
     confirm-close-surface = false
   '';
 
-  # ==== DankMaterialShell on MangoWC ====
-  programs.dank-material-shell = {
+  # ==== Caelestia Shell on Hyprland ====
+  programs.caelestia = {
     enable = true;
-    # Start DMS only from MangoWC's autostart script so it does not run in GNOME.
+    # Start Caelestia only from Hyprland so it does not run in GNOME.
     systemd.enable = false;
+    cli.enable = true;
   };
 
-  xdg.configFile."mango/autostart.sh" = {
-    executable = true;
+  xdg.configFile."hypr/hyprland.conf" = {
     text = ''
-      #!/usr/bin/env sh
-      dms run --session &
+      monitor=,preferred,auto,1
+
+      $mod = SUPER
+      $terminal = ghostty
+
+      exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = caelestia shell -d
+
+      env = XDG_CURRENT_DESKTOP,Hyprland
+      env = XDG_SESSION_DESKTOP,Hyprland
+      env = XDG_SESSION_TYPE,wayland
+
+      input {
+        kb_layout = us
+        follow_mouse = 1
+        touchpad {
+          natural_scroll = true
+        }
+      }
+
+      general {
+        gaps_in = 4
+        gaps_out = 8
+        border_size = 2
+        layout = dwindle
+      }
+
+      decoration {
+        rounding = 8
+      }
+
+      animations {
+        enabled = true
+      }
+
+      dwindle {
+        pseudotile = true
+        preserve_split = true
+      }
+
+      bind = $mod, Return, exec, $terminal
+      bind = $mod, Q, killactive
+      bind = $mod, M, exit
+      bind = $mod, Space, exec, caelestia shell drawers toggle launcher
+      bind = $mod, L, exec, caelestia shell lock lock
+      bind = $mod SHIFT, S, exec, caelestia shell picker open
+      bind = $mod, F, fullscreen
+      bind = $mod, V, togglefloating
+      bind = $mod, P, pseudo
+
+      bind = $mod, left, movefocus, l
+      bind = $mod, right, movefocus, r
+      bind = $mod, up, movefocus, u
+      bind = $mod, down, movefocus, d
+
+      bind = $mod SHIFT, left, movewindow, l
+      bind = $mod SHIFT, right, movewindow, r
+      bind = $mod SHIFT, up, movewindow, u
+      bind = $mod SHIFT, down, movewindow, d
+
+      bind = $mod, 1, workspace, 1
+      bind = $mod, 2, workspace, 2
+      bind = $mod, 3, workspace, 3
+      bind = $mod, 4, workspace, 4
+      bind = $mod, 5, workspace, 5
+      bind = $mod, 6, workspace, 6
+      bind = $mod, 7, workspace, 7
+      bind = $mod, 8, workspace, 8
+      bind = $mod, 9, workspace, 9
+
+      bind = $mod SHIFT, 1, movetoworkspace, 1
+      bind = $mod SHIFT, 2, movetoworkspace, 2
+      bind = $mod SHIFT, 3, movetoworkspace, 3
+      bind = $mod SHIFT, 4, movetoworkspace, 4
+      bind = $mod SHIFT, 5, movetoworkspace, 5
+      bind = $mod SHIFT, 6, movetoworkspace, 6
+      bind = $mod SHIFT, 7, movetoworkspace, 7
+      bind = $mod SHIFT, 8, movetoworkspace, 8
+      bind = $mod SHIFT, 9, movetoworkspace, 9
+
+      bindm = $mod, mouse:272, movewindow
+      bindm = $mod, mouse:273, resizewindow
     '';
   };
 

@@ -16,15 +16,6 @@
     host = "127.0.0.1";
     port = 11434;
 
-    # Pre-pull these models on first activation. Pick whatever you actually
-    # use day-to-day; a 4090's 24 GB of VRAM comfortably runs 70B-ish at
-    # Q4_0 quantization or larger 32B models with full precision.
-    loadModels = [
-      "qwen2.5-coder:32b" # solid local coding model
-      "llama3.1:8b" # lightweight general-purpose
-      "nomic-embed-text" # embeddings for RAG / editor plugins
-    ];
-
     # If you want the API reachable from your LAN:
     # openFirewall = true;
   };

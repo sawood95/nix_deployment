@@ -56,7 +56,10 @@
   };
 
   # Allow unfree packages (Steam, NVIDIA drivers, etc.)
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    cudaCapabilities = [ "8.9" ];
+  };
 
   # ==== System packages (kept minimal — user-level stuff lives in home.nix) ====
   environment.systemPackages = with pkgs; [
@@ -67,7 +70,7 @@
     pciutils
     usbutils
     htop
-    protonvpn-gui
+    proton-vpn
   ];
 
   # ==== SSH (for pushing to your webserver, GitHub, etc.) ====
@@ -105,5 +108,5 @@
 
   # First version of NixOS this config targets. DO NOT bump after install
   # without reading the release notes.
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 }
